@@ -1,0 +1,170 @@
+@font-face {
+  	font-family: "editicon";
+  	font-weight: normal;
+  	font-style: normal;
+  	src: url('../fonts/editicon.ttf') format('truetype'); /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+}
+.edit-icon {
+  	font-family:"editicon" !important;
+  	font-size:1rem;
+  	font-style:normal;
+ 	-webkit-font-smoothing: antialiased;
+ 	-webkit-text-stroke-width: 0.2px;
+  	-moz-osx-font-smoothing: grayscale;
+}
+.edit-icon-link:before {content: "\e800";}
+.edit-icon-unlink:before {content: "\e801";}
+.edit-icon-code:before {content: "\e802";}
+.edit-icon-cancel:before {content: "\e803";}
+.edit-icon-terminal:before {content: "\e804";}
+.edit-icon-angle-down:before {content: "\e805";}
+.edit-icon-font:before {content: "\e806";}
+.edit-icon-bold:before {content: "\e807";}
+.edit-icon-italic:before {content: "\e808";}
+.edit-icon-header:before {content: "\e809";}
+.edit-icon-align-left:before {content: "\e80a";}
+.edit-icon-align-center:before {content: "\e80b";}
+.edit-icon-align-right:before {content: "\e80c";}
+.edit-icon-list-bullet:before {content: "\e80d";}
+.edit-icon-list-numbered:before {content: "\e810";}
+.edit-icon-indent-left:before {content: "\e80e";}
+.edit-icon-indent-right:before {content: "\e80f";}
+.edit-icon-underline:before {content: "\e811";}
+.edit-icon-table:before {content: "\e812";}
+.edit-icon-eraser:before {content: "\e813";}
+.edit-icon-text-height:before {content: "\e814";}
+.edit-icon-brush:before {content: "\e815";}
+.edit-icon-pencil:before {content: "\e816";}
+.edit-icon-minus:before {content: "\e817";}
+.edit-icon-picture:before {content: "\e818";}
+.edit-icon-file-image:before {content: "\e819";}
+.edit-icon-cw:before {content: "\e81a";}
+.edit-icon-ccw:before {content: "\e81b";}
+.edit-icon-music:before {content: "\e911";}
+.edit-icon-play:before {content: "\e912";}
+.edit-icon-location:before {content: "\e947";}
+.edit-icon-happy:before {content: "\e9df";}
+.edit-icon-sigma:before {content: "\ea67";}
+.edit-icon-enlarge2:before {content: "\e98b";}
+.edit-icon-shrink2:before {content: "\e98c";}
+.edit-icon-newspaper:before{content: "\e904";}
+.edit-icon-camera:before{content: "\e90f";}
+.edit-icon-video-camera:before{content: "\e914";}
+.edit-icon-file-zip:before{content: "\e92b";}
+.edit-icon-stack:before{content: "\e92e";}
+.edit-icon-credit-card:before{content: "\e93f";}
+.edit-icon-address-book:before{content: "\e944";}
+.edit-icon-envelop:before{content: "\e945";}
+.edit-icon-drawer:before{content: "\e95c";}
+.edit-icon-download:before{content: "\e960";}
+.edit-icon-upload:before{content: "\e961";}
+.edit-icon-lock:before{content: "\e98f";}
+.edit-icon-unlocked:before{content: "\e990";}
+.edit-icon-wrench:before{content: "\e991";}
+.edit-icon-eye:before{content: "\e9ce";}
+.edit-icon-eye-blocked:before{content: "\e9d1";}
+.edit-icon-command:before{content: "\ea4e";}
+.edit-icon-font2:before{content: "\ea5c";}
+.edit-icon-libreoffice:before{content: "\eade";}
+.edit-icon-quotes-left:before{content: "\e977";}
+.edit-icon-strikethrough:before{content: "\ea65";}
+.edit-icon-desktop:before{content: "\f108";}
+.edit-icon-tablet:before{content: "\f10a";}
+
+
+.edit-box {
+	display: flex;
+	flex-direction: column;
+	width: 800px;
+	height: 400px;
+	margin: 50px auto;
+	border: 1px solid #cfcfcf;
+}
+.edit-menu {	
+	color: #999;
+	background: #fefefe;
+	border-bottom: 1px solid #cfcfcf;
+}
+.edit-item {	
+	position: relative;
+	display: inline-block;
+	cursor: pointer;
+}
+.edit-item>a {	
+	display: inline-block;
+	padding: .3rem .5rem;
+}
+.edit-menu-list {
+	position: absolute;
+	top: 100%;
+	left: -10%;
+	padding: 5px;
+	background: #fefefe;
+	border: 1px solid #cfcfcf;
+	/*display: none;*/
+}
+.hide {
+	display: none !important;
+}
+.edit-child-item {
+	line-height: 1.1;
+}
+.edit-item a {
+	white-space: nowrap; 
+	color: #999;
+}
+.edit-content {
+	flex: 1;
+	padding: 1rem;
+}
+
+.color-box+ul {
+	width: 148px;
+}
+.color-box+ul li {
+	display: inline-block;
+	line-height: 1;
+	font-size: 0;
+	margin: 1px 1px 0 0;
+}
+.color-box+ul .color-block {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	border: 1px solid #cfcfcf;
+}
+.color-1 {	background: #880000;}
+.color-2 {	background: #800080;}
+.color-3 {	background: #ff0000;}
+.color-4 {	background: #ff00ff;}
+.color-5 {	background: #000080;}
+.color-6 {	background: #0000ff;}
+.color-7 {	background: #00ffff;}
+.color-8 {	background: #008080;}
+.color-9 {	background: #008000;}
+.color-10 {	background: #808000;}
+.color-11 {	background: #00ff00;}
+.color-12 {	background: #ffcc00;}
+.color-13 {	background: #808080;}
+.color-14 {	background: #c0c0c0;}
+.color-15 {	background: #000000;}
+.color-16 {	background: #ffffff;}
+
+.h1 {
+	font-size: 2rem;
+}
+.h2 {
+	font-size: 1.5rem;
+}
+.h3 {
+	font-size: 1.17rem;
+}
+.h4 {
+	font-size: 1rem;
+}
+.h5 {
+	font-size: 0.83rem;
+}
+.h6 {
+	font-size: 0.67rem;
+}
