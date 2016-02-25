@@ -152,10 +152,17 @@
 			Edit.selection = document.getSelection();
 			Edit.selection.removeAllRanges();
 			Edit.selection.addRange(Edit.range);
-			document.execCommand(commandName, false, commandValue);
+			if (isFunction(commandName)) {
+				commandName();
+			} else if(isFunction(commandValue)) {
+				commandValue();
+			} else {
+				document.execCommand(commandName, false, commandValue);
+			}			
 			Edit.range = document.getSelection().getRangeAt(0);
 		},	
 		menus: [
+			{type:'btn',title:'查看源码',className:'edit-icon-code',command:'bold'},
 			{type:'btn',title:'加粗',className:'edit-icon-bold',command:'bold'},
 			{type:'btn',title:'下划线',className:'edit-icon-underline',command:'underline'},
 			{type:'btn',title:'斜体',className:'edit-icon-italic',command:'italic'},
@@ -175,6 +182,7 @@
 					}
 				})
 			},
+			{type:'btn',title:'删除线',className:'edit-icon-strikethrough',command:'strikeThrough'},
 			{type:'btn',title:'清除格式',className:'edit-icon-eraser',command:'removeFormat'},
 			{type:'btn',title:'引用',className:'edit-icon-quotes-left',command:'formatBlock',commandValue:'blockquote'},			
 			// {type:'btn',title:'缩进',className:'edit-icon-indent-right',commend:'indent'},
@@ -213,11 +221,10 @@
 			},
 			{type:'btn',title:'插入链接',className:'edit-icon-link',command:'createLink'},
 			{type:'btn',title:'清除链接',className:'edit-icon-unlink',command:'unLink'},
-			{type:'btn',title:'删除线',className:'edit-icon-strikethrough',command:'strikeThrough'},
+			{type:'btn',title:'表格',className:'edit-icon-table',command:'insertHTML',commValue:'插入表格要处理的代码块'},
 			
 			{type:'btn',title:'图片',className:'edit-icon-picture',command:'insertImage',commandValue:'图片URL'},
 			{type:'btn',title:'视频',className:'edit-icon-play',command:'insertHTML',commValue:'插入视频要处理的代码块'},
-			{type:'btn',title:'表格',className:'edit-icon-table',command:'insertHTML',commValue:'插入表格要处理的代码块'},
 			{type:'btn',title:'插入代码',className:'edit-icon-terminal',command:'insertHTML',commValue:'插入代码要处理的代码块'},
 			{type:'btn',title:'撤销',className:'edit-icon-ccw',command:'undo'},
 			{type:'btn',title:'反撤销',className:'edit-icon-cw',command:'redo'}
