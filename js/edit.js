@@ -42,7 +42,9 @@
 			handles = this.handles || {};
 
 		for (var prop in props) {
-			el.setAttribute(prop,props[prop]);
+			if (props[prop]) {
+				el.setAttribute(prop,props[prop]);
+			}			
 		}
 
 		for (var handle in handles) {
@@ -85,7 +87,7 @@
 				'#0000ff':'蓝色', '#00ffff':'湖蓝色', '#008080':'蓝绿色', '#008000':'绿色', '#808000':'橄榄色',
 				'#00ff00':'浅绿色', '#ffcc00':'橙黄色', '#808080':'灰色', '#c0c0c0':'银色', '#000000':'黑色', '#ffffff':'白色'
 	        },
-	        fontsizeOptions: ['10px','13px','16px','19px','22px','25px','28px'],
+	        fontsizeOptions: [10,13,16,19,22,25,28],
 	        headOptions: ['<h1>','<h2>','<h3>','<h4>','<h5>','<h6>']
 	    },
 		configInit: function(options,callback) {
@@ -102,8 +104,7 @@
 		init: function(editBox, options) {
 			options && this.extend(this.menus, options);
 			this.createHtml(editBox);
-			document.execCommand('styleWithCSS', true, undefined);
-			
+			// document.execCommand('styleWithCSS', true, undefined);			
 		},
 		createHtml: function(editBox) {
 			var editMenus = createEl('ul',{class:'edit-menu'}),
@@ -114,7 +115,10 @@
 				if (!btn && item.selectMenu) {
 					menuList = createEl('ul',{class:'edit-menu-list hide'});
 					item.selectMenu.forEach(function(child){
-						menuList.appendChild(createEl('li',{class:'edit-child-item'},[createEl('a',{title:child.title,class:'edit-icon '+child.className,href:'#'},[child.text])],{click:function(e){Edit.command(e,child.command,child.commandValue,null)}}));
+						menuList.appendChild(
+							createEl('li',{class:'edit-child-item'},[
+								createEl('a',{title:child.title,class:'edit-icon '+child.className,href:'#'},[child.text])
+							],{click:function(e){Edit.command(e,child.command,child.commandValue,null)}}));
 					});
 				}
 				element = createEl('li',{class:'edit-item'},[					
@@ -155,37 +159,6 @@
 			{type:'btn',title:'加粗',className:'edit-icon-bold',command:'bold'},
 			{type:'btn',title:'下划线',className:'edit-icon-underline',command:'underline'},
 			{type:'btn',title:'斜体',className:'edit-icon-italic',command:'italic'},
-			{type:'btn',title:'清除格式',className:'edit-icon-eraser',command:'removeFormat'},
-			{type:'btn',title:'缩进',className:'edit-icon-indent-right',commend:'indent'},
-			{type:'btn',title:'取消缩进',className:'edit-icon-indent-left',command:'outdent'},
-			{type:'btn',title:'插入链接',className:'edit-icon-link',command:'createLink'},
-			{type:'btn',title:'清除链接',className:'edit-icon-unlink',command:'unLink'},
-			{type:'btn',title:'删除线',className:'edit-icon-strikethrough',command:'strikeThrough'},
-			{type:'btn',title:'引用',className:'edit-icon-quotes-left',command:'formatBlock',commandValue:'blockquote'},
-			{type:'selectMenu',title:'对齐',className:'edit-icon-align-left',selectMenu:
-				[{className:'edit-icon-align-left',text:'左对齐',command:'justifyLeft'},
-				{className:'edit-icon-align-center',text:'居中对齐',command:'justifyCenter'},
-				{className:'edit-icon-align-right',text:'右对齐',command:'justifyRight'},
-				{className:'edit-icon-align-left',text:'两端对齐',command:'justifyFull'}]
-			},
-			{type:'selectMenu',title:'列表',className:'edit-icon-list-bullet',selectMenu:
-				[{title:'无序列表',className:'edit-icon-list-bullet',text:'无序列表',command:'insertUnorderedList'},
-				{title:'有序列表',className:'edit-icon-list-numbered',text:'有序列表',command:'insertOrderedList'}]
-			},
-			{type:'selectMenu',title:'字体',className:'edit-icon-font2',selectMenu: 
-				Edit.configInit(Edit.styleConfig.fontFamilyOptions,function(options,params){
-					options.forEach(function(option,index){
-						params.push({className:'font-'+(index+1),text:option,command:'fontName',commandValue:option});
-					});
-				})
-			},
-			{type:'selectMenu',title:'字号',className:'edit-icon-text-height',selectMenu:
-				Edit.configInit(Edit.styleConfig.fontsizeOptions,function(options,params){
-					options.forEach(function(option,index){
-						params.push({text:option,command:'fontSize',commandValue:index+1});
-					});
-				})
-			},
 			{type:'selectMenu',title:'字体颜色',className:'edit-icon-pencil color-box',selectMenu:
 				Edit.configInit(Edit.styleConfig.colorOptions,function(options,params){
 					var index = 0;
@@ -202,6 +175,25 @@
 					}
 				})
 			},
+			{type:'btn',title:'清除格式',className:'edit-icon-eraser',command:'removeFormat'},
+			{type:'btn',title:'引用',className:'edit-icon-quotes-left',command:'formatBlock',commandValue:'blockquote'},			
+			// {type:'btn',title:'缩进',className:'edit-icon-indent-right',commend:'indent'},
+			// {type:'btn',title:'取消缩进',className:'edit-icon-indent-left',command:'outdent'},
+			{type:'selectMenu',title:'字体',className:'edit-icon-font2',selectMenu: 
+				Edit.configInit(Edit.styleConfig.fontFamilyOptions,function(options,params){
+					options.forEach(function(option,index){
+						params.push({className:'font-'+(index+1),text:option,command:'fontName',commandValue:option});
+					});
+				})
+			},
+			{type:'selectMenu',title:'字号',className:'edit-icon-text-height',selectMenu:
+				Edit.configInit(Edit.styleConfig.fontsizeOptions,function(options,params){
+					options.forEach(function(option,index){
+						params.push({className:'px'+(index+1),text:option+'px',command:'fontSize',commandValue:index+1});
+					});
+				})
+			},
+			
 			{type:'selectMenu',title:'标题',className:'edit-icon-header',selectMenu:
 				Edit.configInit(Edit.styleConfig.headOptions,function(options,params){
 					options.forEach(function(option,index){
@@ -209,6 +201,20 @@
 					});
 				})
 			},
+			{type:'selectMenu',title:'列表',className:'edit-icon-list-bullet',selectMenu:
+				[{title:'无序列表',className:'edit-icon-list-bullet',command:'insertUnorderedList'},
+				{title:'有序列表',className:'edit-icon-list-numbered',command:'insertOrderedList'}]
+			},
+			{type:'selectMenu',title:'对齐',className:'edit-icon-align-left',selectMenu:
+				[{title:'左对齐',className:'edit-icon-align-left',command:'justifyLeft'},
+				{title:'居中对齐',className:'edit-icon-align-center',command:'justifyCenter'},
+				{title:'右对齐',className:'edit-icon-align-right',command:'justifyRight'},
+				{title:'两端对齐',className:'edit-icon-align-left',command:'justifyFull'}]
+			},
+			{type:'btn',title:'插入链接',className:'edit-icon-link',command:'createLink'},
+			{type:'btn',title:'清除链接',className:'edit-icon-unlink',command:'unLink'},
+			{type:'btn',title:'删除线',className:'edit-icon-strikethrough',command:'strikeThrough'},
+			
 			{type:'btn',title:'图片',className:'edit-icon-picture',command:'insertImage',commandValue:'图片URL'},
 			{type:'btn',title:'视频',className:'edit-icon-play',command:'insertHTML',commValue:'插入视频要处理的代码块'},
 			{type:'btn',title:'表格',className:'edit-icon-table',command:'insertHTML',commValue:'插入表格要处理的代码块'},

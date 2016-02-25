@@ -1,3 +1,50 @@
+/************** css reset start *****************/
+body,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+pre {
+	margin: 0;
+}
+ol,
+ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+h1,
+h2,
+h3,
+h4 {
+	font-weight: normal;
+}
+img {
+	vertical-align: middle;
+}
+a {
+	text-decoration: none;
+}
+input:focus,
+textarea:focus {
+	outline: none;
+} 
+html, body {
+	height: 100%;
+}
+* {
+	outline: none;
+	box-sizing: border-box;
+	/*-webkit-user-select: none;
+	-webkit-tap-highlight-color:rgba(255,255,255,0);*/
+}
+/************** css reset end *****************/
+
 @font-face {
   	font-family: "editicon";
   	font-weight: normal;
@@ -97,11 +144,10 @@
 .edit-menu-list {
 	position: absolute;
 	top: 100%;
-	left: -10%;
-	padding: 5px;
+	left: 0;
+	min-width: 100%;
 	background: #fefefe;
 	border: 1px solid #cfcfcf;
-	/*display: none;*/
 }
 .hide {
 	display: none !important;
@@ -113,13 +159,27 @@
 	white-space: nowrap; 
 	color: #999;
 }
+.edit-item a:hover {
+	color: #666;
+}
+.edit-child-item a {
+	display: inline-block;
+	width: 100%;
+	text-align: center;
+	padding: 3px;
+}
+.edit-child-item a:not(.color-block):hover {
+	background:#d6d6d6;
+}
 .edit-content {
 	flex: 1;
 	padding: 1rem;
+	overflow-y: auto;
 }
 
 .color-box+ul {
 	width: 148px;
+	padding: 2px 5px;
 }
 .color-box+ul li {
 	display: inline-block;
@@ -133,38 +193,62 @@
 	height: 16px;
 	border: 1px solid #cfcfcf;
 }
-.color-1 {	background: #880000;}
-.color-2 {	background: #800080;}
-.color-3 {	background: #ff0000;}
-.color-4 {	background: #ff00ff;}
-.color-5 {	background: #000080;}
-.color-6 {	background: #0000ff;}
-.color-7 {	background: #00ffff;}
-.color-8 {	background: #008080;}
-.color-9 {	background: #008000;}
-.color-10 {	background: #808000;}
-.color-11 {	background: #00ff00;}
-.color-12 {	background: #ffcc00;}
-.color-13 {	background: #808080;}
-.color-14 {	background: #c0c0c0;}
-.color-15 {	background: #000000;}
-.color-16 {	background: #ffffff;}
+.edit-icon-font2+ul a,
+.edit-icon-header+ul a,
+.edit-icon-text-height+ul a {
+	text-align: left;
+}
 
-.h1 {
-	font-size: 2rem;
+.color-1 {background: #880000;}
+.color-2 {background: #800080;}
+.color-3 {background: #ff0000;}
+.color-4 {background: #ff00ff;}
+.color-5 {background: #000080;}
+.color-6 {background: #0000ff;}
+.color-7 {background: #00ffff;}
+.color-8 {background: #008080;}
+.color-9 {background: #008000;}
+.color-10 {background: #808000;}
+.color-11 {background: #00ff00;}
+.color-12 {background: #ffcc00;}
+.color-13 {background: #808080;}
+.color-14 {background: #c0c0c0;}
+.color-15 {background: #000000;}
+.color-16 {background: #ffffff;}
+
+.h1 {font-size: 2rem;}
+.h2 {font-size: 1.5rem;}
+.h3 {font-size: 1.17rem;}
+.h4 {font-size: 1rem;}
+.h5 {font-size: 0.83rem;}
+.h6 {font-size: 0.67rem;}
+
+.px1 {font-size: 10px;}
+.px2 {font-size: 13px;}
+.px3 {font-size: 16px;}
+.px4 {font-size: 19px;}
+.px5 {font-size: 22px;}
+.px6 {font-size: 25px;}
+.px7 {font-size: 28px;}
+
+::-webkit-scrollbar {
+	width: 5px;
 }
-.h2 {
-	font-size: 1.5rem;
+::-webkit-scrollbar-button {
+	width: 100%;
+	height: 0;
 }
-.h3 {
-	font-size: 1.17rem;
+::-webkit-scrollbar-track {
+	background: rgba(250,250,250,1);
+	border: 0px;
+	/*box-shadow: 0px 0px 3px #444 inset;*/
+	/*border-radius: 10px;*/
 }
-.h4 {
-	font-size: 1rem;
+::-webkit-scrollbar-thumb {
+	background: #ddd;
+	border: 0px;
+	/*border-radius: 10px;*/
 }
-.h5 {
-	font-size: 0.83rem;
-}
-.h6 {
-	font-size: 0.67rem;
+::-webkit-scrollbar-thumb:hover {
+	background: #ccc;
 }
