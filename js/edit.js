@@ -107,9 +107,11 @@
 			// document.execCommand('styleWithCSS', true, undefined);			
 		},
 		createHtml: function(editBox) {
-			var editMenus = createEl('ul',{class:'edit-menu'}),
+			var box = createEl('div',{class:'edit-container',id:'edit-container'}),
+				editMenus = createEl('ul',{class:'edit-menu'}),
 				editContent = createEl('div',{class:'edit-content',contenteditable:'true'},[createEl('p',[createEl('br')])],{mouseup:Edit.select}),
 				element;
+			Edit.editContent = editContent;
 			this.menus.forEach(function(item){
 				var btn = (item.type === 'btn'), menuList;
 				if (!btn && item.selectMenu) {
@@ -118,12 +120,12 @@
 						menuList.appendChild(
 							createEl('li',{class:'edit-child-item'},[
 								createEl('a',{title:child.title,class:'edit-icon '+child.className,href:'#'},[child.text])
-							],{click:function(e){Edit.command(e,child.command,child.commandValue,null)}}));
+							],{click:function(e){Edit.command(e,child.command,child.commandValue,child.callback && child.callback.bind(this))}}));
 					});
 				}
 				element = createEl('li',{class:'edit-item'},[					
 					createEl('a',{title:item.title,class:'edit-icon '+item.className,href:'#'},{
-						click: btn ? function(e){Edit.command(e,item.command,item.commandValue,null)} : function(){
+						click: btn ? function(e){Edit.command(e,item.command,item.commandValue,item.callback && item.callback.bind(this))} : function(){
 							if (this.parentNode.contains(Edit.modal)) return;
 							Edit.modal && Edit.modal.classList.add('hide');
 							(Edit.modal = this.parentNode.querySelector('.edit-menu-list')).classList.remove('hide');
@@ -133,7 +135,8 @@
 				]);
 				editMenus.appendChild(element);
 			});
-			document.querySelector(editBox).appendChild(editMenus).parentNode.appendChild(editContent);
+			box.appendChild(editMenus).parentNode.appendChild(editContent);
+			document.querySelector(editBox).appendChild(box);
 			document.addEventListener('click',function(e){
 				if (Edit.modal && e.target.parentNode != Edit.modal.parentNode) {
 					Edit.modal.classList.add('hide');
@@ -152,17 +155,16 @@
 			Edit.selection = document.getSelection();
 			Edit.selection.removeAllRanges();
 			Edit.selection.addRange(Edit.range);
-			if (isFunction(commandName)) {
-				commandName();
-			} else if(isFunction(commandValue)) {
-				commandValue();
-			} else {
+			if (commandName) {
 				document.execCommand(commandName, false, commandValue);
 			}			
 			Edit.range = document.getSelection().getRangeAt(0);
+			callback && callback(event,Edit.editContent);
 		},	
 		menus: [
-			{type:'btn',title:'查看源码',className:'edit-icon-code',command:'bold'},
+			{type:'btn',title:'查看源码',className:'edit-icon-code',callback:function(e,el){
+				alert(el.innerHTML);
+			}},
 			{type:'btn',title:'加粗',className:'edit-icon-bold',command:'bold'},
 			{type:'btn',title:'下划线',className:'edit-icon-underline',command:'underline'},
 			{type:'btn',title:'斜体',className:'edit-icon-italic',command:'italic'},
@@ -227,7 +229,11 @@
 			{type:'btn',title:'视频',className:'edit-icon-play',command:'insertHTML',commValue:'插入视频要处理的代码块'},
 			{type:'btn',title:'插入代码',className:'edit-icon-terminal',command:'insertHTML',commValue:'插入代码要处理的代码块'},
 			{type:'btn',title:'撤销',className:'edit-icon-ccw',command:'undo'},
-			{type:'btn',title:'反撤销',className:'edit-icon-cw',command:'redo'}
+			{type:'btn',title:'反撤销',className:'edit-icon-cw',command:'redo'},
+			{type:'btn',title:'全屏',className:'edit-icon-enlarge2',callback:function(e,el){
+				document.querySelector('#edit-container').classList.toggle('full');
+				this.classList.toggle('edit-icon-shrink2');
+			}}
 		]
 	});
 
