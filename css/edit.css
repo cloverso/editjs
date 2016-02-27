@@ -119,7 +119,7 @@ html, body {
 .edit-icon-tablet:before{content: "\f10a";}
 
 .edit-box {	
-	width: 800px;
+	width: 900px;
 	height: 400px;
 	margin: 50px auto;
 }

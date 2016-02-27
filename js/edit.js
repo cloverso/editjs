@@ -137,7 +137,7 @@
 							Edit.menuList && Edit.menuList.classList.add('hide');
 							(Edit.menuList = this.parentNode.querySelector('.edit-menu-list')).classList.remove('hide');
 						}
-				}),
+					}),
 					!btn ? menuList : null 			
 				]);
 				editMenus.appendChild(element);
@@ -219,8 +219,8 @@
 			{type:'btn',title:'删除线',className:'edit-icon-strikethrough',command:'strikeThrough'},
 			{type:'btn',title:'清除格式',className:'edit-icon-eraser',command:'removeFormat'},
 			{type:'btn',title:'引用',className:'edit-icon-quotes-left',command:'formatBlock',commandValue:'blockquote'},			
-			// {type:'btn',title:'缩进',className:'edit-icon-indent-right',commend:'indent'},
-			// {type:'btn',title:'取消缩进',className:'edit-icon-indent-left',command:'outdent'},
+			{type:'btn',title:'缩进',className:'edit-icon-indent-right',command:'indent'},
+			{type:'btn',title:'取消缩进',className:'edit-icon-indent-left',command:'outdent'},
 			{type:'selectMenu',title:'字体',className:'edit-icon-font2',selectMenu: 
 				Edit.configInit(Edit.styleConfig.fontFamilyOptions,function(options,params){
 					options.forEach(function(option,index){
@@ -234,8 +234,7 @@
 						params.push({className:'px'+(index+1),text:option+'px',command:'fontSize',commandValue:index+1});
 					});
 				})
-			},
-			
+			},			
 			{type:'selectMenu',title:'标题',className:'edit-icon-header',selectMenu:
 				Edit.configInit(Edit.styleConfig.headOptions,function(options,params){
 					options.forEach(function(option,index){
