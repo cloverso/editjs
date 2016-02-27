@@ -98,9 +98,10 @@
 	})
 
 	Edit.extend(Edit, {
+		box: null,
 		range: null,
 		selection: null,
-		modal: null,
+		menuList: null,
 		init: function(editBox, options) {
 			options && this.extend(this.menus, options);
 			this.createHtml(editBox);
@@ -126,9 +127,9 @@
 				element = createEl('li',{class:'edit-item'},[					
 					createEl('a',{title:item.title,class:'edit-icon '+item.className,href:'#'},{
 						click: btn ? function(e){Edit.command(e,item.command,item.commandValue,item.callback && item.callback.bind(this))} : function(){
-							if (this.parentNode.contains(Edit.modal)) return;
-							Edit.modal && Edit.modal.classList.add('hide');
-							(Edit.modal = this.parentNode.querySelector('.edit-menu-list')).classList.remove('hide');
+							if (this.parentNode.contains(Edit.menuList)) return;
+							Edit.menuList && Edit.menuList.classList.add('hide');
+							(Edit.menuList = this.parentNode.querySelector('.edit-menu-list')).classList.remove('hide');
 						}
 				}),
 					!btn ? menuList : null 			
@@ -137,10 +138,11 @@
 			});
 			box.appendChild(editMenus).parentNode.appendChild(editContent);
 			document.querySelector(editBox).appendChild(box);
+			Edit.box = document.querySelector('#edit-container');
 			document.addEventListener('click',function(e){
-				if (Edit.modal && e.target.parentNode != Edit.modal.parentNode) {
-					Edit.modal.classList.add('hide');
-					Edit.modal = null;
+				if (Edit.menuList && e.target.parentNode != Edit.menuList.parentNode) {
+					Edit.menuList.classList.add('hide');
+					Edit.menuList = null;
 				};
 			});
 
@@ -150,20 +152,29 @@
 			Edit.range = document.getSelection().getRangeAt(0);
 		},
 		command: function(e,commandName,commandValue,callback) {
-			Edit.modal && Edit.modal.classList.add('hide');
-			if (!Edit.range) return;
 			Edit.selection = document.getSelection();
 			Edit.selection.removeAllRanges();
-			Edit.selection.addRange(Edit.range);
-			if (commandName) {
-				document.execCommand(commandName, false, commandValue);
-			}			
-			Edit.range = document.getSelection().getRangeAt(0);
+			Edit.range && Edit.selection.addRange(Edit.range);
+			commandName && document.execCommand(commandName, false, commandValue);
+			Edit.range && (Edit.range = document.getSelection().getRangeAt(0));
 			callback && callback(event,Edit.editContent);
 		},	
+		modalShow: function(title,children,className) {
+			Edit.modalBox && Edit.modalClose();
+			className = className ? 'modal-box '+className : 'modal-box';
+			Edit.modalBox = createEl('div',{class:className},[createEl('div',{class:'modal-header'},[
+				createEl('strong',[title]),
+				createEl('span',{class:'modal-close edit-icon edit-icon-cancel'},{click:Edit.modalClose})
+			]),children]);
+			Edit.box.appendChild(Edit.modalBox);
+		},
+		modalClose: function() {
+			Edit.box.removeChild(Edit.modalBox);
+			Edit.modalBox = null;
+		},
 		menus: [
 			{type:'btn',title:'查看源码',className:'edit-icon-code',callback:function(e,el){
-				alert(el.innerHTML);
+				Edit.modalShow('查看源码',createEl('textarea',[el.innerHTML]),'modal-box-2');
 			}},
 			{type:'btn',title:'加粗',className:'edit-icon-bold',command:'bold'},
 			{type:'btn',title:'下划线',className:'edit-icon-underline',command:'underline'},
@@ -221,13 +232,45 @@
 				{title:'右对齐',className:'edit-icon-align-right',command:'justifyRight'},
 				{title:'两端对齐',className:'edit-icon-align-left',command:'justifyFull'}]
 			},
-			{type:'btn',title:'插入链接',className:'edit-icon-link',command:'createLink'},
+			{type:'btn',title:'插入链接',className:'edit-icon-link',command:'createLink',callback:function(){
+				Edit.modalShow('插入链接',createEl('div',{class:'modal-content'},[
+					createEl('p',['链接:',createEl('input',{type:'text',placeholder:'http://'})]),
+					createEl('p',['标题:',createEl('input',{type:'text'})]),
+					createEl('p',['新窗口:',createEl('input',{type:'checkbox',checked:'checked'})]),
+					createEl('p',[createEl('input',{type:'button',value:'插入'})])
+				]));
+			}},
 			{type:'btn',title:'清除链接',className:'edit-icon-unlink',command:'unLink'},
-			{type:'btn',title:'表格',className:'edit-icon-table',command:'insertHTML',commValue:'插入表格要处理的代码块'},
+			{type:'btn',title:'表格',className:'edit-icon-table',command:'insertHTML',callback:function(){
+				Edit.modalShow('插入表格',createEl('div',{class:'modal-content'},[
+					createEl('p',['行数:',createEl('input',{type:'text'})]),
+					createEl('p',['列数:',createEl('input',{type:'text'})]),
+					createEl('p',['显示首行:',createEl('input',{type:'checkbox',checked:'checked'})]),
+					createEl('p',[createEl('input',{type:'button',value:'插入'})])
+				]));
+			}},
 			
-			{type:'btn',title:'图片',className:'edit-icon-picture',command:'insertImage',commandValue:'图片URL'},
-			{type:'btn',title:'视频',className:'edit-icon-play',command:'insertHTML',commValue:'插入视频要处理的代码块'},
-			{type:'btn',title:'插入代码',className:'edit-icon-terminal',command:'insertHTML',commValue:'插入代码要处理的代码块'},
+			{type:'btn',title:'图片',className:'edit-icon-picture',command:'insertImage',callback:function(){
+				Edit.modalShow('插入图片',createEl('div',{class:'modal-content'},[
+					createEl('p',['网址:',createEl('input',{type:'text',placeholder:'http://'})]),
+					createEl('p',['标题:',createEl('input',{type:'text'})]),
+					createEl('p',[createEl('input',{type:'button',value:'插入'})])
+				]));
+			}},
+			{type:'btn',title:'视频',className:'edit-icon-play',command:'insertHTML',callback:function(){
+				Edit.modalShow('插入视频',createEl('div',{class:'modal-content'},[
+					createEl('p',['地址:',createEl('input',{type:'text',placeholder:'*.swf,*.mp4,*.ogg,*.webm'})]),
+					createEl('p',['宽度:',createEl('input',{type:'text'})]),
+					createEl('p',['高度:',createEl('input',{type:'text'})]),
+					createEl('p',[createEl('input',{type:'button',value:'插入'})])
+				]));
+			}},
+			{type:'btn',title:'插入代码',className:'edit-icon-terminal',command:'insertHTML',callback:function(){
+				Edit.modalShow('插入代码',createEl('div',{class:'modal-content'},[
+					createEl('textarea'),
+					createEl('p',[createEl('input',{type:'button',value:'插入'})])
+				]),'modal-box-2');
+			}},
 			{type:'btn',title:'撤销',className:'edit-icon-ccw',command:'undo'},
 			{type:'btn',title:'反撤销',className:'edit-icon-cw',command:'redo'},
 			{type:'btn',title:'全屏',className:'edit-icon-enlarge2',callback:function(e,el){
