@@ -1,5 +1,5 @@
 (function(){
-
+	/****************** 类型判断方法 start ******************/
 	function isType(type) {
 	  	return function(obj) {
 		    return {}.toString.call(obj) === "[object " + type + "]"
@@ -10,7 +10,9 @@
 		isArray = Array.isArray || isType("Array"),
 		isFunction = isType("Function"),
 		isUndefined = isType("Undefined");
+	/****************** 类型判断方法 end ******************/
 
+	/****************** 虚拟DOM创建 start ******************/
 	function El(tagName,props,children,handles) {
 		if (!(this.tagName = tagName)) return;
 		var param, children;
@@ -34,7 +36,6 @@
 			this.handles = handles;
 		}		
 	};
-
 	El.prototype.render = function() {
 		var el = document.createElement(this.tagName),
 			props = this.props || {},
@@ -58,15 +59,17 @@
 		});
 		return el;		
 	}
-
 	function createEl(tagName,props,children,handles) {
 		return new El(tagName,props,children,handles).render();
 	}
+	/****************** 虚拟DOM创建 end ******************/
 
+	/****************** 编辑器 start ******************/
+	// 编辑器构造函数
 	function Edit(editBox, options) {
 		return Edit.init(editBox, options);
 	}
-
+	// 对象拓展方法
 	Edit.extend = function(prop) {
 		Array.prototype.slice.call(arguments, 1).forEach(function(source){
 			for (var key in source) {
@@ -74,10 +77,10 @@
 			}
 		});
 		return prop;
-	}
-
+	}	
 	Edit.extend(Edit, {
-	    styleConfig: {
+		// 编辑器配置文件
+	    styleConfig: {	
 	        fontFamilyOptions: [
 	            '宋体', '黑体', '楷体', '隶书', '幼圆', '微软雅黑', 'Arial', 
 	            'Verdana', 'Georgia', 'Times New Roman', 'Microsoft JhengHei',
@@ -90,6 +93,7 @@
 	        fontsizeOptions: [10,13,16,19,22,25,28],
 	        headOptions: ['<h1>','<h2>','<h3>','<h4>','<h5>','<h6>']
 	    },
+	    // 配置文件初始化回调
 		configInit: function(options,callback) {
 			var params = [];
 			callback(options,params);
@@ -107,12 +111,14 @@
 			this.createHtml(editBox);
 			// document.execCommand('styleWithCSS', true, undefined);			
 		},
+		// 创建编辑器DOM对象
 		createHtml: function(editBox) {
-			var box = createEl('div',{class:'edit-container',id:'edit-container'}),
-				editMenus = createEl('ul',{class:'edit-menu'}),
-				editContent = createEl('div',{class:'edit-content',contenteditable:'true'},[createEl('p',[createEl('br')])],{mouseup:Edit.select}),
+			var box = createEl('div',{class:'edit-container',id:'edit-container'}),  // 编辑器盒子
+				editMenus = createEl('ul',{class:'edit-menu'}),						// 编辑器菜单组盒子
+				editContent = createEl('div',{class:'edit-content',contenteditable:'true'},[createEl('p',[createEl('br')])],{mouseup:Edit.select}),  // 编辑器文本操作域
 				element;
 			Edit.editContent = editContent;
+			// 菜单组追加子菜单
 			this.menus.forEach(function(item){
 				var btn = (item.type === 'btn'), menuList;
 				if (!btn && item.selectMenu) {
@@ -136,9 +142,13 @@
 				]);
 				editMenus.appendChild(element);
 			});
+			// 向编辑器盒子中追加 菜单组和文本域
 			box.appendChild(editMenus).parentNode.appendChild(editContent);
+			// 向真实DOM中追加 编辑器主体
 			document.querySelector(editBox).appendChild(box);
+			// 获取真实编辑器DOM，供后续调用
 			Edit.box = document.querySelector('#edit-container');
+			// 注册子选项集隐藏事件
 			document.addEventListener('click',function(e){
 				if (Edit.menuList && e.target.parentNode != Edit.menuList.parentNode) {
 					Edit.menuList.classList.add('hide');
@@ -147,10 +157,12 @@
 			});
 
 		},
+		// 获取当前文本操作域
 		select: function(e) {
 			e.stopPropagation();
 			Edit.range = document.getSelection().getRangeAt(0);
 		},
+		// 文本操作命令方法（核心方法）
 		command: function(e,commandName,commandValue,callback) {
 			Edit.selection = document.getSelection();
 			Edit.selection.removeAllRanges();
@@ -159,6 +171,7 @@
 			Edit.range && (Edit.range = document.getSelection().getRangeAt(0));
 			callback && callback(event,Edit.editContent);
 		},	
+		// 弹出模态框
 		modalShow: function(title,children,className) {
 			Edit.modalBox && Edit.modalClose();
 			className = className ? 'modal-box '+className : 'modal-box';
@@ -168,10 +181,18 @@
 			]),children]);
 			Edit.box.appendChild(Edit.modalBox);
 		},
+		// 关闭模态框
 		modalClose: function() {
 			Edit.box.removeChild(Edit.modalBox);
 			Edit.modalBox = null;
 		},
+		// 编辑器菜单集合
+		/*
+		 *  {type:'操作类别',title:'菜单提示文字',className:'css样式类名',command:'要执行的文本命令',commandValue:'文本命令所需要的传值',callback:'回调事件',selectMenu:'子菜单集'}
+		 *	type=btn: 可直接操作的菜单
+		 *  type=selectMenu: 含有子菜单集的菜单按钮，实际的命令操作通过 selectMenu属性处理
+		 *  需要输入命令值的则通过callback回调方法处理，主要思路为：弹出模态框 -> 进行相关输入 -> 获取命令值执行命令
+		 */
 		menus: [
 			{type:'btn',title:'查看源码',className:'edit-icon-code',callback:function(e,el){
 				Edit.modalShow('查看源码',createEl('textarea',[el.innerHTML]),'modal-box-2');
@@ -279,7 +300,8 @@
 			}}
 		]
 	});
+	/****************** 编辑器 end ******************/
 
-	this.Edit = Edit;
+	this.Edit = Edit;  // 全局属性挂载
 
 }).call(this);
